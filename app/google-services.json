@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "258397512364",
+    "firebase_url": "https://rankem-1.firebaseio.com",
+    "project_id": "rankem-1",
+    "storage_bucket": "rankem-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258397512364:android:79aa68c5e769e587",
+        "android_client_info": {
+          "package_name": "build.free.mrgds2.rankem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258397512364-6qrqtt3sf2c1mh1uvd5erdc0a7ovsid1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "build.free.mrgds2.rankem",
+            "certificate_hash": "39dae245d2347d127ccff8f1d7b454341e4bcd0c"
+          }
+        },
+        {
+          "client_id": "258397512364-fv90rjkgp60ip1vrq103agpipcttb8uq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM_6p89hTtEJFj1tH2YQT_v_E6ULXQTnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258397512364-fv90rjkgp60ip1vrq103agpipcttb8uq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
