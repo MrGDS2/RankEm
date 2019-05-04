@@ -2,6 +2,7 @@ package build.free.mrgds2.rankem
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -29,6 +30,7 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     lateinit var mRecyclerView: RecyclerView
     lateinit var layoutManager: RecyclerView.LayoutManager
     lateinit var mDatabase: DatabaseReference
+    lateinit  var database : FirebaseDatabase
     lateinit var tv_dialog_name: TextView
     lateinit var iv_dialog_pic: ImageView
     lateinit var myDialog: Dialog
@@ -54,33 +56,14 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         button = myDialog.findViewById<View>(R.id.rank_btn) as Button
         rbStars = myDialog.findViewById<View>(R.id.ratingBar) as RatingBar
         //handle stars after loading menu
-        rbStars.onRatingBarChangeListener = object : RatingBar.OnRatingBarChangeListener {
-            override fun onRatingChanged(ratingBar: RatingBar?, rank: Float, fromUser: Boolean) {
-                //toast for ranking friend
-                Toast.makeText(this@Home_Nav,
-                    "You've Ranked" + tv_dialog_name.text + " a "
-                            +  rank.toString(), Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-
-        //button to send to fire base
-        button.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(v: View?) {
-
-            }
-
-
-        })
-
-
-
-
 
 
         //Init Firebase
         // Write a message to the database
-        mDatabase=  FirebaseDatabase.getInstance().getReference("Friends")
+        database = FirebaseDatabase.getInstance()
+        mDatabase=  database.getReference("Friends")
+
+
 
 
         //menu bar
@@ -103,8 +86,11 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
 }
 
-
     private fun loadView() {
+
+        val map = mutableMapOf<String,Float>()
+        rbStars.rating=0.0f //set each default to zero
+
         val fbRecyclerAdapter= object : FirebaseRecyclerAdapter<Friend,FriendsViewHolder>(
          Friend::class.java,
         R.layout.friend_view,
@@ -116,10 +102,17 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     ){
         override fun populateViewHolder(viewHolder: FriendsViewHolder, model: Friend, position: Int) {
 
-            viewHolder.itemView.user_name.text = model.name
-            Picasso.with(baseContext).load(model.image).into(viewHolder.itemView.picture)
-
             val friend_name : String?= model.name
+            val friend_photo : String?= model.image
+
+
+
+
+
+            viewHolder.itemView.user_name.text = friend_name
+            Picasso.with(baseContext).load(friend_photo).into(viewHolder.itemView.picture)
+
+
 
 
             viewHolder.setFriendClickListener(object : friend_ClickListener {
@@ -129,16 +122,54 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     tv_dialog_name.text = friend_name
                     myDialog.show()
 
+
+
+
+                    rbStars.onRatingBarChangeListener = object : RatingBar.OnRatingBarChangeListener {
+
+                        override fun onRatingChanged(ratingBar: RatingBar?, rank: Float, fromUser: Boolean) {
+
+                             map.put(friend_name!!,rank)
+
+                        }
+                    }
                 }
             })
+
+            button.setOnClickListener(object: View.OnClickListener{
+                override fun onClick(v: View?) {
+
+                    //toast for ranking friend
+                    Toast.makeText(this@Home_Nav,
+                        "You've Ranked " + tv_dialog_name.text + " a "
+                                +  map.get(tv_dialog_name.text), Toast.LENGTH_SHORT)
+                        .show()
+
+                    writeFriendRank(tv_dialog_name.text.toString(),map.get(tv_dialog_name.text))
+                    rbStars.rating=0.0f //set each default to zero
+
+                }
+            })
+
         }
+    }
+
+    mRecyclerView.adapter= fbRecyclerAdapter
+    }
+
+   private fun writeFriendRank(friend_name: String,rank : Float?){
+
+        database.reference.child("Rank").child(friend_name).setValue(rank)
 
     }
-    mRecyclerView.adapter= fbRecyclerAdapter
-}
+
+
+
 
 
     override fun onBackPressed() {
+
+
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
@@ -168,21 +199,11 @@ class Home_Nav : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.nav_camera -> {
                 // Handle the camera action
             }
-            R.id.nav_gallery -> {
 
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
             R.id.nav_share -> {
 
             }
-            R.id.nav_send -> {
 
-            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

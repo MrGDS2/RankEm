@@ -4,7 +4,7 @@
     <string name="facebook_app_id">1231037063726436</string>
     <string name="fb_login_protocol_scheme">fb414752472679155</string>
     <string name="fb_txt">Log in with Facebook</string>
-    <string name="title_activity_home__nav">Home_Nav</string>
+    <string name="title_activity_home__nav">Friend List</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
